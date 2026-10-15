@@ -1,12 +1,27 @@
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import type { SavedDefense, SavedPlay } from "../../data/db";
 import { listDefenses } from "../../data/defenseRepository";
 import { listPlays } from "../../data/playbookRepository";
 import { SIM_DURATION_S } from "../../engine/simulate";
 import { PlaybackControls } from "./PlaybackControls";
 import { SimulationField } from "./SimulationField";
-import { useSimulationStore } from "./simulationStore";
+import { useSimulationStore, type CameraMode, type ViewMode } from "./simulationStore";
 import "./SimulationPage.css";
+
+// Three.js/R3F ist groß (~1 MB) - nur laden, wenn die 3D-Ansicht tatsächlich gebraucht wird.
+const Simulation3D = lazy(() => import("./Simulation3D").then((m) => ({ default: m.Simulation3D })));
+
+const VIEW_MODES: { value: ViewMode; label: string }[] = [
+  { value: "2d", label: "2D" },
+  { value: "3d", label: "3D" },
+  { value: "split", label: "Split" },
+];
+
+const CAMERA_MODES: { value: CameraMode; label: string }[] = [
+  { value: "qb", label: "QB-Augenhöhe" },
+  { value: "free", label: "Frei" },
+  { value: "endzone", label: "Endzone" },
+];
 
 export function SimulationPage() {
   const [plays, setPlays] = useState<SavedPlay[]>([]);
@@ -20,6 +35,8 @@ export function SimulationPage() {
     showZones,
     showOpenIndicator,
     showLeverage,
+    viewMode,
+    cameraMode,
     selectPlay,
     selectDefense,
     setT,
@@ -27,6 +44,8 @@ export function SimulationPage() {
     toggleShowZones,
     toggleShowOpenIndicator,
     toggleShowLeverage,
+    setViewMode,
+    setCameraMode,
   } = useSimulationStore();
 
   useEffect(() => {
@@ -69,9 +88,54 @@ export function SimulationPage() {
   }, [isPlaying, speed, setT, setPlaying]);
 
   return (
-    <div className="simulation-page">
+    <div className={viewMode === "split" ? "simulation-page simulation-page--split" : "simulation-page"}>
       <div className="simulation-page__field">
-        <SimulationField />
+        <div className="simulation-page__view-tabs">
+          {VIEW_MODES.map((v) => (
+            <button
+              key={v.value}
+              type="button"
+              className={v.value === viewMode ? "simulation-page__view-tab simulation-page__view-tab--active" : "simulation-page__view-tab"}
+              onClick={() => setViewMode(v.value)}
+            >
+              {v.label}
+            </button>
+          ))}
+        </div>
+
+        {viewMode === "2d" && <SimulationField />}
+        {viewMode === "3d" && (
+          <Suspense fallback={<div className="simulation-page__loading-3d">3D-Ansicht wird geladen…</div>}>
+            <Simulation3D />
+          </Suspense>
+        )}
+        {viewMode === "split" && (
+          <div className="simulation-page__split">
+            <SimulationField />
+            <Suspense fallback={<div className="simulation-page__loading-3d">3D-Ansicht wird geladen…</div>}>
+              <Simulation3D />
+            </Suspense>
+          </div>
+        )}
+
+        {(viewMode === "3d" || viewMode === "split") && (
+          <div className="simulation-page__camera-tabs">
+            <span className="simulation-page__label">Kamera</span>
+            {CAMERA_MODES.map((c) => (
+              <button
+                key={c.value}
+                type="button"
+                className={
+                  c.value === cameraMode ? "simulation-page__view-tab simulation-page__view-tab--active" : "simulation-page__view-tab"
+                }
+                onClick={() => setCameraMode(c.value)}
+              >
+                {c.label}
+              </button>
+            ))}
+          </div>
+        )}
+
         <PlaybackControls />
       </div>
 

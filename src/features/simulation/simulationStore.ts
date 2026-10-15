@@ -3,6 +3,8 @@ import type { SavedDefense, SavedPlay } from "../../data/db";
 import { SIM_DURATION_S } from "../../engine/simulate";
 
 export type PlaybackSpeed = 0.25 | 0.5 | 1;
+export type ViewMode = "2d" | "3d" | "split";
+export type CameraMode = "qb" | "free" | "endzone";
 
 interface SimulationState {
   play: SavedPlay | null;
@@ -13,6 +15,8 @@ interface SimulationState {
   showZones: boolean;
   showOpenIndicator: boolean;
   showLeverage: boolean;
+  viewMode: ViewMode;
+  cameraMode: CameraMode;
 
   selectPlay(play: SavedPlay | null): void;
   selectDefense(defense: SavedDefense | null): void;
@@ -24,6 +28,8 @@ interface SimulationState {
   toggleShowZones(): void;
   toggleShowOpenIndicator(): void;
   toggleShowLeverage(): void;
+  setViewMode(mode: ViewMode): void;
+  setCameraMode(mode: CameraMode): void;
 }
 
 export const useSimulationStore = create<SimulationState>((set) => ({
@@ -35,6 +41,8 @@ export const useSimulationStore = create<SimulationState>((set) => ({
   showZones: true,
   showOpenIndicator: true,
   showLeverage: false,
+  viewMode: "2d",
+  cameraMode: "qb",
 
   selectPlay: (play) => set({ play, t: 0, isPlaying: false }),
   selectDefense: (defense) => set({ defense, t: 0, isPlaying: false }),
@@ -61,4 +69,7 @@ export const useSimulationStore = create<SimulationState>((set) => ({
   toggleShowZones: () => set((state) => ({ showZones: !state.showZones })),
   toggleShowOpenIndicator: () => set((state) => ({ showOpenIndicator: !state.showOpenIndicator })),
   toggleShowLeverage: () => set((state) => ({ showLeverage: !state.showLeverage })),
+
+  setViewMode: (viewMode) => set({ viewMode }),
+  setCameraMode: (cameraMode) => set({ cameraMode }),
 }));

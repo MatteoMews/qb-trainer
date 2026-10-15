@@ -1,0 +1,18 @@
+.simulation-3d {
+  width: 100%;
+  height: 480px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #87ceeb;
+}
+
+.simulation-3d--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #1a1a1a;
+  color: #999;
+  font-size: 0.85rem;
+  text-align: center;
+  padding: 1rem;
+}

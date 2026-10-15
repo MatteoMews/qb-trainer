@@ -18,6 +18,60 @@
   gap: 0.75rem;
 }
 
+.simulation-page--split {
+  grid-template-columns: 1fr;
+}
+
+.simulation-page--split .simulation-page__field {
+  max-width: none;
+}
+
+.simulation-page__split {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.simulation-page__split > * {
+  flex: 1 1 360px;
+  max-width: 420px;
+}
+
+.simulation-page__view-tabs,
+.simulation-page__camera-tabs {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.simulation-page__view-tab {
+  font-size: 0.75rem;
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+}
+
+.simulation-page__view-tab--active {
+  border-color: #646cff;
+  color: #ffffff;
+}
+
+.simulation-page__label {
+  font-size: 0.75rem;
+  color: #999;
+}
+
+.simulation-page__loading-3d {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 480px;
+  color: #999;
+  font-size: 0.85rem;
+  background: #1a1a1a;
+  border-radius: 8px;
+}
+
 .simulation-page__panel {
   display: flex;
   flex-direction: column;
