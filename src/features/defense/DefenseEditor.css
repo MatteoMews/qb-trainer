@@ -1,0 +1,128 @@
+.defense-editor {
+  display: grid;
+  grid-template-columns: minmax(280px, 420px) 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+@media (max-width: 800px) {
+  .defense-editor {
+    grid-template-columns: 1fr;
+  }
+}
+
+.defense-editor__field {
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.defense-editor__disguise-toggle {
+  font-size: 0.8rem;
+  padding: 0.4rem 0.6rem;
+}
+
+.defense-editor__panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  text-align: left;
+}
+
+.defense-editor__section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #333;
+}
+
+.defense-editor__section h2 {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.defense-editor__section h3 {
+  font-size: 0.85rem;
+  margin: 0.25rem 0 0;
+  color: #ccc;
+}
+
+.defense-editor__section label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+  color: #ccc;
+}
+
+.defense-editor__section input,
+.defense-editor__section select {
+  padding: 0.4rem;
+  border-radius: 4px;
+  border: 1px solid #444;
+  background: #1a1a1a;
+  color: inherit;
+}
+
+.defense-editor__hint {
+  font-size: 0.8rem;
+  color: #999;
+  margin: 0;
+}
+
+.defense-editor__list {
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.8rem;
+  color: #ccc;
+}
+
+.defense-editor__columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.defense-editor__chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.defense-editor__chip {
+  font-size: 0.75rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid #444;
+  color: #ccc;
+}
+
+.defense-editor__save {
+  padding: 0.6rem;
+  font-weight: 600;
+}
+
+.defender-token {
+  cursor: grab;
+}
+
+.defender-token__shape {
+  fill: #6ea8ff;
+  stroke: #1b3a73;
+  stroke-width: 1;
+}
+
+.defender-token__shape--selected {
+  fill: #ffffff;
+  stroke: #ff5566;
+  stroke-width: 2;
+}
+
+.defender-token__label {
+  fill: #0b1830;
+  font-size: 6.5px;
+  font-weight: 700;
+  pointer-events: none;
+}

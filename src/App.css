@@ -10,3 +10,25 @@
   gap: 1.5rem;
   text-align: center;
 }
+
+.app__nav {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  border-bottom: 1px solid #333;
+  padding-bottom: 0.75rem;
+}
+
+.app__nav-item {
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  color: #ccc;
+}
+
+.app__nav-item--active {
+  background: #1a1a1a;
+  border-color: #646cff;
+  color: #ffffff;
+}

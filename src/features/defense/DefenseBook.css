@@ -1,0 +1,50 @@
+.defense-book {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.defense-book__item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #333;
+  border-radius: 6px;
+  flex-wrap: wrap;
+}
+
+.defense-book__meta {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.defense-book__name {
+  font-weight: 600;
+}
+
+.defense-book__sub {
+  font-size: 0.75rem;
+  color: #999;
+}
+
+.defense-book__actions {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.defense-book__actions button {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+}
+
+.defense-book__empty {
+  color: #999;
+  font-size: 0.85rem;
+}

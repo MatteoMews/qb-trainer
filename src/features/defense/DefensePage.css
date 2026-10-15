@@ -1,0 +1,13 @@
+.defense-page {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.defense-page__book {
+  text-align: left;
+}
+
+.defense-page__book h2 {
+  font-size: 1.1rem;
+}
