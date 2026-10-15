@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import type { SavedDefense } from "../../data/db";
+import { downloadNamedJson } from "../../data/downloadFile";
 import { deleteDefense, duplicateDefense, listDefenses, renameDefense } from "../../data/defenseRepository";
 import { useDefenseStore } from "./defenseStore";
 import "./DefenseBook.css";
@@ -64,6 +65,9 @@ export function DefenseBook({ refreshToken }: DefenseBookProps) {
             </button>
             <button type="button" onClick={() => handleDuplicate(defense)}>
               Duplizieren
+            </button>
+            <button type="button" onClick={() => downloadNamedJson(defense.data.name, defense.data)}>
+              Exportieren
             </button>
             <button type="button" onClick={() => handleRename(defense)}>
               Umbenennen

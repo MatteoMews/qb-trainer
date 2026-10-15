@@ -47,3 +47,25 @@ export const PlaySchema = z.object({
 export type Play = z.infer<typeof PlaySchema>;
 
 export { HashSchema };
+
+export interface ParseResult<T> {
+  success: boolean;
+  data?: T;
+  error?: string;
+}
+
+/** Parst und validiert einen Play aus rohem JSON-Text, mit einer für Menschen verständlichen
+ *  Fehlermeldung statt eines rohen Zod-Fehlerobjekts (Projektauftrag 5.8). */
+export function parsePlayJson(raw: string): ParseResult<Play> {
+  let json: unknown;
+  try {
+    json = JSON.parse(raw);
+  } catch {
+    return { success: false, error: "Ungültiges JSON: Die Datei/der Text lässt sich nicht als JSON lesen." };
+  }
+  const result = PlaySchema.safeParse(json);
+  if (!result.success) {
+    return { success: false, error: result.error.issues.map((i) => `${i.path.join(".") || "(Wurzel)"}: ${i.message}`).join("\n") };
+  }
+  return { success: true, data: result.data };
+}

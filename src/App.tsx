@@ -3,6 +3,7 @@ import { EditorPage } from "./features/editor/EditorPage";
 import { DefensePage } from "./features/defense/DefensePage";
 import { SimulationPage } from "./features/simulation/SimulationPage";
 import { ReadsPage } from "./features/reads/ReadsPage";
+import { SettingsPage } from "./features/settings/SettingsPage";
 import { TABS, useNavStore } from "./app/navStore";
 import "./App.css";
 
@@ -43,6 +44,7 @@ function App() {
           <ScoutingPage />
         </Suspense>
       )}
+      {activeTab === "settings" && <SettingsPage />}
     </main>
   );
 }

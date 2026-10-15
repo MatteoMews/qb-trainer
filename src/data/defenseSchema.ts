@@ -25,3 +25,24 @@ export const DefenseSchema = z.object({
   notes: z.string().optional(),
 });
 export type Defense = z.infer<typeof DefenseSchema>;
+
+export interface ParseResult<T> {
+  success: boolean;
+  data?: T;
+  error?: string;
+}
+
+/** Parst und validiert eine Defense aus rohem JSON-Text, mit verständlicher Fehlermeldung. */
+export function parseDefenseJson(raw: string): ParseResult<Defense> {
+  let json: unknown;
+  try {
+    json = JSON.parse(raw);
+  } catch {
+    return { success: false, error: "Ungültiges JSON: Die Datei/der Text lässt sich nicht als JSON lesen." };
+  }
+  const result = DefenseSchema.safeParse(json);
+  if (!result.success) {
+    return { success: false, error: result.error.issues.map((i) => `${i.path.join(".") || "(Wurzel)"}: ${i.message}`).join("\n") };
+  }
+  return { success: true, data: result.data };
+}

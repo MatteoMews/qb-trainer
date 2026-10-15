@@ -6,8 +6,23 @@
 
 .defense-page__book {
   text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .defense-page__book h2 {
   font-size: 1.1rem;
+  margin: 0;
+}
+
+.defense-page__book-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.defense-page__book-header button {
+  font-size: 0.78rem;
+  padding: 0.35rem 0.7rem;
 }

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import type { SavedPlay } from "../../data/db";
+import { downloadNamedJson } from "../../data/downloadFile";
 import {
   deletePlay,
   duplicatePlay,
@@ -79,6 +80,9 @@ export function Playbook({ refreshToken }: PlaybookProps) {
             </button>
             <button type="button" onClick={() => handleMirror(play)}>
               Spiegeln
+            </button>
+            <button type="button" onClick={() => downloadNamedJson(play.data.name, play.data)}>
+              Exportieren
             </button>
             <button type="button" onClick={() => handleRename(play)}>
               Umbenennen
