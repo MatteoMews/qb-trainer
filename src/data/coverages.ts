@@ -13,6 +13,11 @@ import type { DefensePosition } from "./positions";
 
 export type CoverageShell = "no-high" | "single-high" | "two-high" | "quarters" | "bracket";
 
+/** Steuert das Simulations-Verhalten (Phase 4): "man" = Verteidiger folgen einem Receiver,
+ *  "zone" = Verteidiger droppen zu ihrem Landmark, "pattern-match" = startet wie Zone, matcht
+ *  aber vertikale Releases (vereinfacht wie Zone simuliert, siehe engine/simulate.ts). */
+export type CoverageType = "man" | "zone" | "pattern-match";
+
 export interface CoveragePlayer {
   id: string;
   position: DefensePosition;
@@ -28,6 +33,7 @@ export interface CoverageZone {
 export interface Coverage {
   name: string;
   shell: CoverageShell;
+  coverageType: CoverageType;
   description: string;
   zones: readonly CoverageZone[];
   strengths: readonly string[];
@@ -41,6 +47,7 @@ export const COVERAGES: readonly Coverage[] = [
   {
     name: "Cover 0",
     shell: "no-high",
+    coverageType: "man",
     description: "Reine Mann-Coverage ohne Deep-Safety-Hilfe. Maximaler Druck, keine Sicherheit gegen den großen Play.",
     zones: [],
     strengths: ["Maximaler Pass-Rush möglich", "Schwer zu lesen pre-snap", "Eng am Receiver"],
@@ -57,6 +64,7 @@ export const COVERAGES: readonly Coverage[] = [
   {
     name: "Cover 1 Free",
     shell: "single-high",
+    coverageType: "man",
     description: "Mann-Coverage mit einem freien Deep-Safety in der Mitte, sonst Man-to-Man ohne weitere Hilfe.",
     zones: [{ role: "FS", label: "Deep Middle (Free)", landmark: "Mittig, ~12-14 yd Tiefe" }],
     strengths: ["Hilfe über allen Receivern mittig", "Guter Blitz-Begleiter"],
@@ -73,6 +81,7 @@ export const COVERAGES: readonly Coverage[] = [
   {
     name: "Cover 1 Robber",
     shell: "single-high",
+    coverageType: "man",
     description:
       "Wie Cover 1 Free, aber ein zusätzlicher Defender (oft SS) spielt als 'Robber' unterhalb und liest die Augen des QB, statt fest zu manen.",
     zones: [
@@ -93,6 +102,7 @@ export const COVERAGES: readonly Coverage[] = [
   {
     name: "Cover 1 Rat/Hole",
     shell: "single-high",
+    coverageType: "man",
     description:
       "Wie Cover 1 Free, aber ein Linebacker ('Rat') spielt statt eines RB-Mans die mittlere Lücke (Hole) und unterstützt gegen Scramble-Drill/Check-downs.",
     zones: [
@@ -113,6 +123,7 @@ export const COVERAGES: readonly Coverage[] = [
   {
     name: "Cover 2 Zone",
     shell: "two-high",
+    coverageType: "zone",
     description: "Zwei Deep-Safeties teilen sich die tiefe Hälfte, Corners spielen Flat-Zone, Linebacker die Hook/Curl-Zonen.",
     zones: [
       { role: "FS", label: "Deep Half (links)", landmark: "~10-12 yd Tiefe, halbe Feldbreite" },
@@ -134,6 +145,7 @@ export const COVERAGES: readonly Coverage[] = [
   {
     name: "Tampa 2",
     shell: "two-high",
+    coverageType: "zone",
     description: "Cover-2-Variante, bei der der Mike Linebacker die Deep-Middle-Lücke zwischen den Safeties zusätzlich absichert.",
     zones: [
       { role: "FS", label: "Deep Half (links)", landmark: "~12-14 yd Tiefe" },
@@ -154,6 +166,7 @@ export const COVERAGES: readonly Coverage[] = [
   {
     name: "2-Man",
     shell: "two-high",
+    coverageType: "man",
     description: "Zwei Deep-Safeties wie Cover 2, aber alle Underneath-Defender spielen Mann-Coverage statt Zone.",
     zones: [
       { role: "FS", label: "Deep Half (links)", landmark: "~10-12 yd Tiefe" },
@@ -173,6 +186,7 @@ export const COVERAGES: readonly Coverage[] = [
   {
     name: "Cover 3 Sky",
     shell: "single-high",
+    coverageType: "zone",
     description: "Deep-Third-Zone mit Safety-Rotation: die Strong Safety ('Sky') rotiert zum Flat/Force-Defender.",
     zones: [
       { role: "FS", label: "Deep Third (Mitte)", landmark: "Mittig, ~14 yd Tiefe" },
@@ -194,6 +208,7 @@ export const COVERAGES: readonly Coverage[] = [
   {
     name: "Cover 3 Buzz",
     shell: "single-high",
+    coverageType: "zone",
     description: "Cover-3-Variante, bei der die schwache Safety ('Buzz') statt der starken zum Curl/Flat 'buzzt', während die starke Safety tief bleibt.",
     zones: [
       { role: "FS", label: "Deep Third (Mitte)", landmark: "Mittig, ~14 yd Tiefe" },
@@ -215,6 +230,7 @@ export const COVERAGES: readonly Coverage[] = [
   {
     name: "Cover 3 Cloud",
     shell: "single-high",
+    coverageType: "zone",
     description: "Cover-3-Variante mit Corner-Support: der Corner zur Call-Seite rollt als Flat/Force-Defender hoch, die Safety bleibt tief.",
     zones: [
       { role: "FS", label: "Deep Third (Mitte)", landmark: "Mittig, ~14 yd Tiefe" },
@@ -236,6 +252,7 @@ export const COVERAGES: readonly Coverage[] = [
   {
     name: "Cover 3 Match (Rip/Liz)",
     shell: "single-high",
+    coverageType: "pattern-match",
     description:
       "Pattern-Match-Variante von Cover 3: Deep-Third-Defender matchen vertikale Releases der #2/#3-Receiver (Seam-Flat-Regeln), statt starr Zone zu droppen.",
     zones: [
@@ -258,6 +275,7 @@ export const COVERAGES: readonly Coverage[] = [
   {
     name: "Cover 4 Match-Quarters",
     shell: "quarters",
+    coverageType: "pattern-match",
     description: "Vier Deep-Defender teilen sich je ein Feldviertel und matchen die Releases der Receiver in ihrem Viertel.",
     zones: [
       { role: "CB1", label: "Quarter (links außen)", landmark: "Außen, ~10 yd Tiefe" },
@@ -279,6 +297,7 @@ export const COVERAGES: readonly Coverage[] = [
   {
     name: "Palms (2-Read)",
     shell: "quarters",
+    coverageType: "pattern-match",
     description:
       "Quarters-Variante: Corner und Safety einer Seite 'lesen' den #2-Receiver - geht er raus, squattet der Corner auf den Out und die Safety übernimmt #1 vertikal.",
     zones: [
@@ -301,6 +320,7 @@ export const COVERAGES: readonly Coverage[] = [
   {
     name: "Cover 7 (Bracket-Match)",
     shell: "quarters",
+    coverageType: "pattern-match",
     description:
       "Sammelbegriff für Quarters-Spielarten mit individuellen Bracket-Regeln pro Receiver (z.B. 'Stubbie' gegen den Slot, 'Cutoff' gegen den Außenreceiver).",
     zones: [
@@ -323,6 +343,7 @@ export const COVERAGES: readonly Coverage[] = [
   {
     name: "Cover 6 (Quarter-Quarter-Half)",
     shell: "quarters",
+    coverageType: "pattern-match",
     description: "Split-Field-Coverage: zur kurzen/Boundary-Seite Quarters, zur breiten/Field-Seite Cover-2-Half.",
     zones: [
       { role: "CB1", label: "Quarter (Boundary außen)", landmark: "Außen kurze Seite, ~10 yd Tiefe" },
@@ -344,6 +365,7 @@ export const COVERAGES: readonly Coverage[] = [
   {
     name: "Bracket/Doppel-Coverage",
     shell: "bracket",
+    coverageType: "man",
     description:
       "Zwei Defender doppeln den gefährlichsten Receiver (z.B. Corner unterhalb, Safety darüber), der Rest der Defense spielt eine Basis-Coverage (meist Cover 1).",
     zones: [

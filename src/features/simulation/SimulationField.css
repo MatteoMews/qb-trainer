@@ -1,0 +1,56 @@
+.simulation-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.simulation-field--empty {
+  position: relative;
+}
+
+.simulation-field__hint {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.7);
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: #ccc;
+  max-width: 80%;
+  text-align: center;
+}
+
+.simulation-field__zone {
+  fill: #ff5566;
+  fill-opacity: 0.08;
+  stroke: #ff5566;
+  stroke-opacity: 0.25;
+  stroke-width: 1;
+}
+
+.simulation-field__leverage {
+  stroke: #ffd166;
+  stroke-width: 1.5;
+  stroke-dasharray: 3 2;
+  opacity: 0.8;
+}
+
+.simulation-field__status {
+  fill: none;
+  stroke-width: 2;
+  opacity: 0.85;
+}
+
+.simulation-field__status--open {
+  stroke: #3ddc84;
+}
+
+.simulation-field__status--contested {
+  stroke: #ffd166;
+}
+
+.simulation-field__status--tight {
+  stroke: #ff5566;
+}
