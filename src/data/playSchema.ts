@@ -36,6 +36,10 @@ export const PlaySchema = z.object({
     personnel: z.string(),
     qbAlignment: z.enum(QB_ALIGNMENTS),
     dropback: z.enum(DROPBACK_TYPES),
+    /** Name des Konzepts aus data/concepts.ts, falls der Play darüber erzeugt wurde (z.B. für
+     *  den Quiz-Filter "nur meine Spielzüge", siehe engine/quizGenerators.ts). Optional, weil
+     *  frei gezeichnete Plays keinem Konzept entsprechen müssen. */
+    concept: z.string().optional(),
     players: z.array(PlayPlayerSchema),
   }),
   notes: z.string().optional(),

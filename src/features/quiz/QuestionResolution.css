@@ -1,0 +1,36 @@
+.question-resolution {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #333;
+}
+
+.question-resolution--correct {
+  border-color: #3ddc84;
+}
+
+.question-resolution--wrong {
+  border-color: #ff5566;
+}
+
+.question-resolution h3 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0;
+  font-size: 1rem;
+}
+
+.question-resolution__time {
+  font-size: 0.8rem;
+  color: #999;
+  font-weight: 400;
+}
+
+.question-resolution p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #ccc;
+}

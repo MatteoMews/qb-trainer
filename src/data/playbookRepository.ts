@@ -47,3 +47,11 @@ export async function listFolders(): Promise<string[]> {
   const plays = await db.plays.toArray();
   return Array.from(new Set(plays.map((play) => play.folder))).sort();
 }
+
+/** Konzept-Namen, die in den gespeicherten Spielzügen tatsächlich vorkommen (nur Plays, die
+ *  unverändert aus einem Konzept gebaut wurden, siehe playSchema.ts `offense.concept`). Für den
+ *  Quiz-Filter "nur meine Spielzüge" (Projektauftrag 5.6). */
+export async function listMyConceptNames(): Promise<string[]> {
+  const plays = await db.plays.toArray();
+  return Array.from(new Set(plays.map((play) => play.data.offense.concept).filter((name): name is string => !!name)));
+}

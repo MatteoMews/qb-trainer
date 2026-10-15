@@ -1,0 +1,28 @@
+.quiz-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.quiz-stats__table h3 {
+  font-size: 0.85rem;
+  margin: 0 0 0.4rem;
+  color: #ccc;
+}
+
+.quiz-stats__table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+}
+
+.quiz-stats__table td {
+  padding: 0.25rem 0.4rem;
+  border-bottom: 1px solid #262626;
+  color: #ccc;
+}
+
+.quiz-stats__empty {
+  font-size: 0.8rem;
+  color: #999;
+}

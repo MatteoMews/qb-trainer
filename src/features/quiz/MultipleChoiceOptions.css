@@ -1,0 +1,28 @@
+.mc-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.mc-options__button {
+  padding: 0.6rem 0.9rem;
+  text-align: left;
+  border-radius: 6px;
+}
+
+.mc-options__button--selected {
+  border-color: #646cff;
+  color: #ffffff;
+}
+
+.mc-options__button--correct {
+  border-color: #3ddc84;
+  background: #0f2a1a;
+  color: #3ddc84;
+}
+
+.mc-options__button--wrong {
+  border-color: #ff5566;
+  background: #33130d;
+  color: #ff5566;
+}

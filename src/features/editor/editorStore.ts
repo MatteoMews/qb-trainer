@@ -32,6 +32,9 @@ interface EditorState {
   players: EditorPlayer[];
   selectedId: string | null;
   isDrawingRoute: boolean;
+  /** Konzept, das zuletzt unverändert angewendet wurde (für den Quiz-Filter "nur meine
+   *  Spielzüge", siehe engine/quizGenerators.ts). Wird bei manuellen Anpassungen gelöscht. */
+  lastAppliedConcept: string | undefined;
 
   setPlayName(name: string): void;
   loadFormation(formation: Formation): void;
@@ -74,6 +77,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   players: playersFromFormation(FORMATIONS[0], "middle"),
   selectedId: null,
   isDrawingRoute: false,
+  lastAppliedConcept: undefined,
 
   setPlayName: (playName) => set({ playName }),
 
@@ -83,6 +87,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
       players: playersFromFormation(formation, state.hash),
       selectedId: null,
       isDrawingRoute: false,
+      lastAppliedConcept: undefined,
     })),
 
   setHash: (hash) =>
@@ -109,6 +114,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
               : { type: "route", routeName: match.task.route, points: match.route ?? [] };
           return { ...player, start: match.start, task };
         }),
+        lastAppliedConcept: concept.name,
       };
     }),
 
@@ -117,6 +123,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   movePlayer: (id, point) =>
     set((state) => ({
       players: state.players.map((player) => (player.id === id ? { ...player, start: point } : player)),
+      lastAppliedConcept: undefined,
     })),
 
   assignRoute: (id, routeName) =>
@@ -127,17 +134,20 @@ export const useEditorStore = create<EditorState>((set, get) => ({
       const points = generateRoute(routeName, { startX: player.start.x, side: sideOf(player.start, ballX) });
       return {
         players: state.players.map((p) => (p.id === id ? { ...p, task: { type: "route", routeName, points } } : p)),
+        lastAppliedConcept: undefined,
       };
     }),
 
   setBlock: (id) =>
     set((state) => ({
       players: state.players.map((p) => (p.id === id ? { ...p, task: { type: "block" } } : p)),
+      lastAppliedConcept: undefined,
     })),
 
   clearAssignment: (id) =>
     set((state) => ({
       players: state.players.map((p) => (p.id === id ? { ...p, task: { type: "none" } } : p)),
+      lastAppliedConcept: undefined,
     })),
 
   startDrawingRoute: (id) =>
@@ -145,6 +155,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
       selectedId: id,
       isDrawingRoute: true,
       players: state.players.map((p) => (p.id === id ? { ...p, task: { type: "route", routeName: "Go", points: [] } } : p)),
+      lastAppliedConcept: undefined,
     })),
 
   addRouteWaypoint: (point) =>
@@ -174,6 +185,8 @@ export const useEditorStore = create<EditorState>((set, get) => ({
               ? { ...player.task, points: player.task.points.map((pt) => ({ x: mirrorX(pt.x), y: pt.y })) }
               : player.task,
         })),
+        // Eine gespiegelte Formation passt weiterhin zum Konzept (Rollen bleiben gleich),
+        // daher bleibt lastAppliedConcept hier bewusst erhalten.
       };
     }),
 
@@ -190,6 +203,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
         personnel: state.formation.personnel,
         qbAlignment: state.formation.qbAlignment,
         dropback: state.dropback,
+        concept: state.lastAppliedConcept,
         players: state.players
           .filter((p) => p.task.type !== "none")
           .map((p) => ({
@@ -219,6 +233,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
       tags: play.tags,
       selectedId: null,
       isDrawingRoute: false,
+      lastAppliedConcept: play.offense.concept,
       players: basePlayers.map((player) => {
         const saved = savedById.get(player.id);
         if (!saved) return player;

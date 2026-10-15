@@ -1,0 +1,12 @@
+.question-timer {
+  height: 6px;
+  border-radius: 999px;
+  background: #1a1a1a;
+  overflow: hidden;
+}
+
+.question-timer__bar {
+  height: 100%;
+  background: #646cff;
+  transition: width 0.1s linear;
+}

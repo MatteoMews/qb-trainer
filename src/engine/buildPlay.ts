@@ -52,6 +52,7 @@ export function buildPlay({
       personnel: formation.personnel,
       qbAlignment: formation.qbAlignment,
       dropback,
+      concept: concept.name,
       players,
     },
   };

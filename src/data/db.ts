@@ -18,9 +18,23 @@ export interface SavedDefense {
   updatedAt: string;
 }
 
+export type QuizQuestionType = "pre-snap" | "post-snap-receiver" | "progression-order" | "beater" | "disguise";
+
+export interface QuizAttempt {
+  id?: number;
+  timestamp: string;
+  questionType: QuizQuestionType;
+  concept?: string;
+  coverage?: string;
+  correct: boolean;
+  timedOut: boolean;
+  reactionTimeMs: number;
+}
+
 export class QbTrainerDb extends Dexie {
   plays!: Table<SavedPlay, number>;
   defenses!: Table<SavedDefense, number>;
+  quizAttempts!: Table<QuizAttempt, number>;
 
   constructor() {
     super("qb-trainer");
@@ -30,6 +44,11 @@ export class QbTrainerDb extends Dexie {
     this.version(2).stores({
       plays: "++id, data.name, folder, updatedAt",
       defenses: "++id, data.name, folder, updatedAt",
+    });
+    this.version(3).stores({
+      plays: "++id, data.name, folder, updatedAt",
+      defenses: "++id, data.name, folder, updatedAt",
+      quizAttempts: "++id, questionType, concept, coverage, timestamp",
     });
   }
 }
