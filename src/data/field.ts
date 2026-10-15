@@ -28,3 +28,10 @@ export function hashX(hash: Hash): Yards {
 
 /** Yard-Linien, die am Feld beschriftet werden (alle 10 yd, von je einer Endzone aus gezählt). */
 export const YARD_NUMBER_LINES: readonly Yards[] = [10, 20, 30, 40, 50, 60, 70, 80, 90];
+
+/** Begrenzt eine Cross-Field-x-Position auf die Seitenlinien (0..FIELD_WIDTH_YD).
+ *  Wichtig, wenn Formationen oder Routen von einem Hash nahe der Seitenlinie ausgehen:
+ *  Richtung Boundary bleibt dann weniger Platz als Richtung Field. */
+export function clampCrossField(x: Yards): Yards {
+  return Math.min(FIELD_WIDTH_YD, Math.max(0, x));
+}

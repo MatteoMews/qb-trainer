@@ -1,5 +1,5 @@
 #root {
-  max-width: 900px;
+  max-width: 1100px;
   margin: 0 auto;
   padding: 2rem;
 }
@@ -7,10 +7,6 @@
 .app {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-}
-
-.app__field {
-  max-width: 480px;
-  margin: 0 auto;
+  gap: 1.5rem;
+  text-align: center;
 }

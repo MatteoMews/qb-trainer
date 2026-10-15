@@ -1,3 +1,4 @@
+import { forwardRef, type PointerEventHandler, type ReactNode } from "react";
 import {
   END_ZONE_DEPTH_YD,
   FIELD_WIDTH_YD,
@@ -9,8 +10,21 @@ import "./Field2D.css";
 
 const HASH_TICK_WIDTH_YD = 1;
 
-/** Statisches NCAA-Football-Feld in Vogelperspektive (Offense unten, Richtung Verteidigung = nach oben). */
-export function Field2D() {
+export interface Field2DProps {
+  /** Overlay-Inhalt (Spieler, Routen), im selben Koordinatensystem wie das Feld gerendert. */
+  children?: ReactNode;
+  onPointerDown?: PointerEventHandler<SVGSVGElement>;
+  onPointerMove?: PointerEventHandler<SVGSVGElement>;
+  onPointerUp?: PointerEventHandler<SVGSVGElement>;
+}
+
+/** NCAA-Football-Feld in Vogelperspektive (Offense unten, Richtung Verteidigung = nach oben).
+ *  Nimmt optional Overlay-Children (Spieler/Routen) entgegen und leitet Pointer-Events weiter,
+ *  damit der Editor Drag&Drop über dem Feld umsetzen kann. */
+export const Field2D = forwardRef<SVGSVGElement, Field2DProps>(function Field2D(
+  { children, onPointerDown, onPointerMove, onPointerUp },
+  ref,
+) {
   const yardLines = Array.from({ length: 101 }, (_, yardLine) => yardLine);
   const leftHashX = crossFieldToSvgX(HASH_FROM_SIDELINE_YD);
   const rightHashX = crossFieldToSvgX(FIELD_WIDTH_YD - HASH_FROM_SIDELINE_YD);
@@ -19,10 +33,14 @@ export function Field2D() {
 
   return (
     <svg
+      ref={ref}
       className="field-2d"
       viewBox={`0 0 ${FIELD_SVG_WIDTH} ${FIELD_SVG_HEIGHT}`}
       role="img"
       aria-label="American-Football-Feld, NCAA-Maße, Vogelperspektive"
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
     >
       <rect x={0} y={0} width={FIELD_SVG_WIDTH} height={FIELD_SVG_HEIGHT} className="field-2d__turf" />
 
@@ -83,6 +101,8 @@ export function Field2D() {
       })}
 
       <rect x={0} y={0} width={FIELD_SVG_WIDTH} height={FIELD_SVG_HEIGHT} className="field-2d__boundary" />
+
+      {children}
     </svg>
   );
-}
+});
