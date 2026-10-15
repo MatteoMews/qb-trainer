@@ -1,0 +1,86 @@
+.scouting-analysis {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  text-align: left;
+}
+
+.scouting-analysis__section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #333;
+}
+
+.scouting-analysis__section h2 {
+  font-size: 1rem;
+  margin: 0 0 0.25rem;
+}
+
+.scouting-analysis__situation {
+  margin-top: 0.5rem;
+}
+
+.scouting-analysis__situation h3 {
+  font-size: 0.82rem;
+  color: #ccc;
+  margin: 0 0 0.3rem;
+}
+
+.scouting-analysis__bar-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.78rem;
+}
+
+.scouting-analysis__bar-label {
+  flex: 0 0 140px;
+  color: #ccc;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.scouting-analysis__bar-track {
+  flex: 1;
+  height: 8px;
+  background: #1a1a1a;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.scouting-analysis__bar-fill {
+  height: 100%;
+  background: #646cff;
+}
+
+.scouting-analysis__bar-pct {
+  flex: 0 0 70px;
+  text-align: right;
+  color: #999;
+}
+
+.scouting-analysis__blitz {
+  font-size: 0.8rem;
+  color: #999;
+  margin: 0.4rem 0 0;
+}
+
+.scouting-analysis__suggestion {
+  font-size: 0.82rem;
+  color: #ccc;
+  margin: 0;
+}
+
+.scouting-analysis__empty {
+  font-size: 0.85rem;
+  color: #999;
+}
+
+.scouting-analysis__train {
+  align-self: flex-start;
+  font-weight: 600;
+  padding: 0.6rem 1rem;
+}

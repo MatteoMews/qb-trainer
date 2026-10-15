@@ -1,25 +1,18 @@
-import { lazy, Suspense, useState } from "react";
+import { lazy, Suspense } from "react";
 import { EditorPage } from "./features/editor/EditorPage";
 import { DefensePage } from "./features/defense/DefensePage";
 import { SimulationPage } from "./features/simulation/SimulationPage";
 import { ReadsPage } from "./features/reads/ReadsPage";
+import { TABS, useNavStore } from "./app/navStore";
 import "./App.css";
 
 // Three.js/R3F (für die Post-Snap-3D-Frage) nur laden, wenn der Quiz-Tab wirklich geöffnet wird.
 const QuizPage = lazy(() => import("./features/quiz/QuizPage").then((m) => ({ default: m.QuizPage })));
-
-const TABS = [
-  { id: "playbook", label: "Playbook" },
-  { id: "defenses", label: "Defenses" },
-  { id: "simulation", label: "Simulation" },
-  { id: "reads", label: "Reads" },
-  { id: "quiz", label: "Quiz" },
-] as const;
-
-type TabId = (typeof TABS)[number]["id"];
+const ScoutingPage = lazy(() => import("./features/scouting/ScoutingPage").then((m) => ({ default: m.ScoutingPage })));
 
 function App() {
-  const [activeTab, setActiveTab] = useState<TabId>("playbook");
+  const activeTab = useNavStore((state) => state.activeTab);
+  const setActiveTab = useNavStore((state) => state.setActiveTab);
 
   return (
     <main className="app">
@@ -43,6 +36,11 @@ function App() {
       {activeTab === "quiz" && (
         <Suspense fallback={<p>Quiz wird geladen…</p>}>
           <QuizPage />
+        </Suspense>
+      )}
+      {activeTab === "scouting" && (
+        <Suspense fallback={<p>Scouting wird geladen…</p>}>
+          <ScoutingPage />
         </Suspense>
       )}
     </main>

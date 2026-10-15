@@ -1,6 +1,7 @@
 import Dexie, { type Table } from "dexie";
 import type { Play } from "./playSchema";
 import type { Defense } from "./defenseSchema";
+import type { Hash } from "./field";
 
 export interface SavedPlay {
   id?: number;
@@ -31,10 +32,42 @@ export interface QuizAttempt {
   reactionTimeMs: number;
 }
 
+export interface Opponent {
+  id?: number;
+  name: string;
+  league: string;
+  notes: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** Ein einzelner erfasster Snap aus dem Gegner-Video (Projektauftrag 5.7). Front/Coverage
+ *  referenzieren nach Möglichkeit die Namen aus fronts.ts/coverages.ts, damit die Auswertung
+ *  die vorhandenen Beater-Konzepte nutzen kann - "Unbekannt" ist immer erlaubt (Daten aus Video
+ *  sind oft unvollständig). */
+export interface Snap {
+  id?: number;
+  opponentId: number;
+  down: 1 | 2 | 3 | 4;
+  distance: number;
+  fieldPosition: number;
+  hash: Hash;
+  offensePersonnel?: string;
+  defenseFront: string;
+  coverage: string;
+  blitz: boolean;
+  blitzType?: string;
+  result: string;
+  notes?: string;
+  createdAt: string;
+}
+
 export class QbTrainerDb extends Dexie {
   plays!: Table<SavedPlay, number>;
   defenses!: Table<SavedDefense, number>;
   quizAttempts!: Table<QuizAttempt, number>;
+  opponents!: Table<Opponent, number>;
+  snaps!: Table<Snap, number>;
 
   constructor() {
     super("qb-trainer");
@@ -49,6 +82,13 @@ export class QbTrainerDb extends Dexie {
       plays: "++id, data.name, folder, updatedAt",
       defenses: "++id, data.name, folder, updatedAt",
       quizAttempts: "++id, questionType, concept, coverage, timestamp",
+    });
+    this.version(4).stores({
+      plays: "++id, data.name, folder, updatedAt",
+      defenses: "++id, data.name, folder, updatedAt",
+      quizAttempts: "++id, questionType, concept, coverage, timestamp",
+      opponents: "++id, name, updatedAt",
+      snaps: "++id, opponentId, down, coverage, createdAt",
     });
   }
 }

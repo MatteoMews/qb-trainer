@@ -67,6 +67,14 @@ describe("generateDisguiseQuestion", () => {
     expect(question.correctAnswer).toBe(question.actualCoverage.name);
     expect(question.options).toContain(question.actualCoverage.name);
   });
+
+  it("restricts the actual (correct) coverage to a given pool, e.g. a scouted opponent's tendencies", () => {
+    const pool = [findCoverage("Cover 3 Buzz")!];
+    for (let i = 0; i < 10; i++) {
+      const question = generateDisguiseQuestion(pool)!;
+      expect(question.actualCoverage.name).toBe("Cover 3 Buzz");
+    }
+  });
 });
 
 describe("checkAnswer", () => {

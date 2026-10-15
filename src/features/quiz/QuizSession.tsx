@@ -9,7 +9,7 @@ import { useQuizStore } from "./quizStore";
 import "./QuizSession.css";
 
 export function QuizSession() {
-  const { setup, phase, currentQuestion, questionIndex, history, submitAnswer, handleTimeout, nextQuestion } = useQuizStore();
+  const { setup, phase, currentQuestion, questionIndex, history, opponentContext, submitAnswer, handleTimeout, nextQuestion } = useQuizStore();
   const [pendingAnswer, setPendingAnswer] = useState<string | null>(null);
 
   if (!currentQuestion) return null;
@@ -42,6 +42,7 @@ export function QuizSession() {
   return (
     <div className="quiz-session">
       <div className="quiz-session__header">
+        {opponentContext && <span className="quiz-session__opponent">Trainiere gegen {opponentContext.opponentName}</span>}
         <span>
           Frage {questionIndex + 1} / {setup.questionCount}
         </span>

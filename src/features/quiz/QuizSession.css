@@ -23,3 +23,8 @@
   color: #ffffff;
   margin: 0;
 }
+
+.quiz-session__opponent {
+  color: #646cff;
+  font-weight: 600;
+}

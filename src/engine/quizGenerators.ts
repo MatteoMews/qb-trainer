@@ -187,15 +187,21 @@ export function generateBeaterQuestion(coverage: Coverage): BeaterQuestion | nul
   };
 }
 
-export function generateDisguiseQuestion(): DisguiseQuestion | null {
-  const preSnapCoverage = pickRandom(COVERAGES);
-  const candidates = COVERAGES.filter((c) => c.shell !== preSnapCoverage.shell);
+/** `coveragePool` schränkt ein, woraus die tatsächliche (Post-Snap-)Coverage gewählt wird - z.B.
+ *  auf die Coverages eines gescouteten Gegners (Projektauftrag 5.7: "Gegner-spezifisches Quiz").
+ *  Die gezeigte Pre-Snap-Disguise kommt bewusst aus allen Coverages, da jede Shell als Täuschung
+ *  plausibel ist. */
+export function generateDisguiseQuestion(coveragePool: readonly Coverage[] = COVERAGES): DisguiseQuestion | null {
+  if (coveragePool.length === 0) return null;
+  const actualCoverage = pickRandom(coveragePool);
+  const candidates = COVERAGES.filter((c) => c.shell !== actualCoverage.shell);
   if (candidates.length === 0) return null;
-  const actualCoverage = pickRandom(candidates);
+  const preSnapCoverage = pickRandom(candidates);
   const front = pickRandom(FRONTS);
   const hash = pickRandom(HASHES);
 
-  const distractors = sampleDistinct(COVERAGES, 3, actualCoverage).map((c) => c.name);
+  const distractorPool = coveragePool.length >= 4 ? coveragePool : COVERAGES;
+  const distractors = sampleDistinct(distractorPool, 3, actualCoverage).map((c) => c.name);
 
   return {
     id: `disguise-${preSnapCoverage.name}-${actualCoverage.name}-${Date.now()}-${Math.random()}`,
@@ -265,7 +271,7 @@ export function generateRandomQuestion(
     let question: QuizQuestion | null = null;
     if (type === "pre-snap" && coverage) question = generatePreSnapQuestion(coverage);
     else if (type === "beater" && coverage) question = generateBeaterQuestion(coverage);
-    else if (type === "disguise") question = generateDisguiseQuestion();
+    else if (type === "disguise") question = generateDisguiseQuestion(coverages);
     else if (type === "post-snap-receiver" && concept && coverage) question = generatePostSnapReceiverQuestion(concept, coverage);
     else if (type === "progression-order" && concept) question = generateProgressionOrderQuestion(concept);
 
