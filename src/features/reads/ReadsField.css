@@ -1,0 +1,16 @@
+.reads-field {
+  max-width: 420px;
+}
+
+.reads-field__progression-badge {
+  fill: #646cff;
+  stroke: #ffffff;
+  stroke-width: 1;
+}
+
+.reads-field__progression-label {
+  fill: #ffffff;
+  font-size: 7px;
+  font-weight: 700;
+  pointer-events: none;
+}

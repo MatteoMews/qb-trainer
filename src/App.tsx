@@ -2,12 +2,14 @@ import { useState } from "react";
 import { EditorPage } from "./features/editor/EditorPage";
 import { DefensePage } from "./features/defense/DefensePage";
 import { SimulationPage } from "./features/simulation/SimulationPage";
+import { ReadsPage } from "./features/reads/ReadsPage";
 import "./App.css";
 
 const TABS = [
   { id: "playbook", label: "Playbook" },
   { id: "defenses", label: "Defenses" },
   { id: "simulation", label: "Simulation" },
+  { id: "reads", label: "Reads" },
 ] as const;
 
 type TabId = (typeof TABS)[number]["id"];
@@ -33,6 +35,7 @@ function App() {
       {activeTab === "playbook" && <EditorPage />}
       {activeTab === "defenses" && <DefensePage />}
       {activeTab === "simulation" && <SimulationPage />}
+      {activeTab === "reads" && <ReadsPage />}
     </main>
   );
 }

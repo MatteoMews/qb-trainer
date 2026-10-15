@@ -1,0 +1,73 @@
+.reads-explanation {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  text-align: left;
+}
+
+.reads-explanation__section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #333;
+}
+
+.reads-explanation__section h2 {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.reads-explanation__section p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #ccc;
+}
+
+.reads-explanation__list {
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.85rem;
+  color: #ccc;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.reads-explanation__progression {
+  margin: 0;
+  padding-left: 1.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.reads-explanation__progression li strong {
+  font-size: 0.85rem;
+}
+
+.reads-explanation__progression li p {
+  margin: 0.15rem 0 0;
+}
+
+.reads-explanation__honest-gap {
+  font-style: italic;
+  color: #ffd166;
+}
+
+.reads-explanation__source {
+  font-size: 0.75rem;
+  color: #999;
+}
+
+.reads-explanation__stars {
+  font-size: 1.1rem;
+  color: #ffd166;
+  letter-spacing: 1px;
+}
+
+.reads-explanation__tier {
+  font-size: 0.75rem;
+  color: #999;
+  letter-spacing: normal;
+}
