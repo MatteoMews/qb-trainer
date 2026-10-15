@@ -1,4 +1,5 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { useShallow } from "zustand/react/shallow";
 import type { SavedDefense, SavedPlay } from "../../data/db";
 import { listDefenses } from "../../data/defenseRepository";
 import { listPlays } from "../../data/playbookRepository";
@@ -27,6 +28,9 @@ export function SimulationPage() {
   const [plays, setPlays] = useState<SavedPlay[]>([]);
   const [defenses, setDefenses] = useState<SavedDefense[]>([]);
 
+  // Selektiv abonniert (ohne `t`), damit diese Seite nicht bei jedem Animationsframe
+  // neu rendert, während die Simulation läuft - `t` wird nur von PlaybackControls/
+  // SimulationField/Simulation3D direkt gebraucht.
   const {
     play,
     defense,
@@ -40,13 +44,38 @@ export function SimulationPage() {
     selectPlay,
     selectDefense,
     setT,
+    stepBy,
     setPlaying,
+    reset,
     toggleShowZones,
     toggleShowOpenIndicator,
     toggleShowLeverage,
     setViewMode,
     setCameraMode,
-  } = useSimulationStore();
+  } = useSimulationStore(
+    useShallow((s) => ({
+      play: s.play,
+      defense: s.defense,
+      isPlaying: s.isPlaying,
+      speed: s.speed,
+      showZones: s.showZones,
+      showOpenIndicator: s.showOpenIndicator,
+      showLeverage: s.showLeverage,
+      viewMode: s.viewMode,
+      cameraMode: s.cameraMode,
+      selectPlay: s.selectPlay,
+      selectDefense: s.selectDefense,
+      setT: s.setT,
+      stepBy: s.stepBy,
+      setPlaying: s.setPlaying,
+      reset: s.reset,
+      toggleShowZones: s.toggleShowZones,
+      toggleShowOpenIndicator: s.toggleShowOpenIndicator,
+      toggleShowLeverage: s.toggleShowLeverage,
+      setViewMode: s.setViewMode,
+      setCameraMode: s.setCameraMode,
+    })),
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -86,6 +115,43 @@ export function SimulationPage() {
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
   }, [isPlaying, speed, setT, setPlaying]);
+
+  // Tastenkürzel laut Projektauftrag Abschnitt 6: Leertaste = Play/Pause, Pfeile = Schritt, R = Reset.
+  // Greift nicht, solange der Fokus in einem Eingabefeld liegt (z. B. Spielzug-/Defense-Auswahl).
+  useEffect(() => {
+    const STEP_S = 0.1;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null;
+      const tag = target?.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || target?.isContentEditable) {
+        return;
+      }
+      switch (e.key) {
+        case " ":
+        case "Spacebar":
+          e.preventDefault();
+          setPlaying(!useSimulationStore.getState().isPlaying);
+          break;
+        case "ArrowLeft":
+          e.preventDefault();
+          stepBy(-STEP_S);
+          break;
+        case "ArrowRight":
+          e.preventDefault();
+          stepBy(STEP_S);
+          break;
+        case "r":
+        case "R":
+          e.preventDefault();
+          reset();
+          break;
+        default:
+          break;
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [setPlaying, stepBy, reset]);
 
   return (
     <div className={viewMode === "split" ? "simulation-page simulation-page--split" : "simulation-page"}>

@@ -1,6 +1,6 @@
 # QB Trainer
 
-American-Football-Taktik-App für Quarterbacks: Spielzüge entwerfen, gegen moderne Defenses simulieren, Reads lernen, Quiz trainieren und Gegner scouten. Läuft komplett im Browser (keine Server, keine KI-API). PWA-Installierbarkeit/Offline-Nutzung ist für Phase 10 geplant, aktuell noch nicht umgesetzt.
+American-Football-Taktik-App für Quarterbacks: Spielzüge entwerfen, gegen moderne Defenses simulieren, Reads lernen, Quiz trainieren und Gegner scouten. Läuft komplett im Browser (keine Server, keine KI-API), lässt sich als App installieren und funktioniert danach auch offline.
 
 ## Lokal starten
 
@@ -22,6 +22,28 @@ npm run build   # Typecheck + Produktions-Build
 ## Deployment
 
 Push auf `main` baut die App per GitHub Actions und veröffentlicht sie auf GitHub Pages (`.github/workflows/deploy.yml`).
+
+## Als App installieren / offline nutzen
+
+QB Trainer ist eine PWA (Progressive Web App). Im Browser (z.B. Chrome/Edge über das
+Installieren-Icon in der Adressleiste, Safari auf dem iPhone/iPad über "Zum Home-Bildschirm")
+lässt sich die App installieren und startet danach wie eine native App in einem eigenen Fenster.
+
+Nach dem ersten Laden cacht ein Service Worker die komplette App (HTML/CSS/JS/Icons), sodass sie
+auch **ohne Internetverbindung** funktioniert - alle Daten liegen ohnehin nur lokal in der
+IndexedDB des Browsers (siehe Backup-Workflow unten). Neue Versionen werden automatisch im
+Hintergrund nachgeladen und beim nächsten Start aktiv.
+
+## Tastenkürzel (Simulation)
+
+Im Tab **Simulation** stehen folgende Kürzel zur Verfügung (sofern der Fokus nicht gerade in
+einem Eingabefeld wie der Spielzug-/Defense-Auswahl liegt):
+
+| Taste | Aktion |
+| --- | --- |
+| `Leertaste` | Play/Pause |
+| `←` / `→` | Einen Frame zurück/vor |
+| `R` | Reset auf den Snap (t = 0) |
 
 ## Backup-Workflow (Mac ↔ Windows)
 
@@ -58,7 +80,26 @@ anderes Gerät zu übertragen).
 
 ## Status
 
-Phasen 1-9 (Fundament, Editor, Defenses, Simulation 2D, Reads, 3D-QB-Ansicht, Quiz, Scouting,
-Import/Export & Backup) sind umgesetzt. Phase 10 bringt noch: PWA/Offline-Installierbarkeit
-(aktuell **noch nicht** vorhanden - die App läuft nur online über GitHub Pages), Tastenkürzel,
-Performance-Feinschliff.
+Alle 10 Phasen des Projektauftrags sind umgesetzt: Fundament, Editor, Defenses, Simulation 2D,
+Reads, 3D-QB-Ansicht, Quiz, Scouting, Import/Export & Backup sowie Feinschliff (PWA/Offline,
+Tastenkürzel, Performance).
+
+## Offene Football-Check-Punkte
+
+Football-Inhalte (Formationen, Routen, Fronts, Coverages, Konzepte, Pressures, Timing) wurden
+nach bestem Wissen und mit plausiblen Richtwerten erstellt, folgen aber keinem einzelnen
+offiziellen Playbook. An folgenden Stellen im Code markiert ein `// TODO(Football-Check)`-
+Kommentar explizit, wo die Werte/Benennungen von dir als Football-Experte geprüft werden
+sollten, weil sich Systeme/Teams/Quellen hier unterscheiden können:
+
+- [`src/data/formations.ts`](src/data/formations.ts) - Splits/Tiefen/Abstände der Formationen
+- [`src/data/fronts.ts`](src/data/fronts.ts) - Pre-Snap-Tiefe/-Breite der Front-7
+- [`src/data/coverages.ts`](src/data/coverages.ts) - Alignment-Tiefen, Zonen-Landmarks, Benennung der Coverage-Varianten
+- [`src/data/concepts.ts`](src/data/concepts.ts) - Progression (1-4) pro Passkonzept
+- [`src/data/pressures.ts`](src/data/pressures.ts) - Rusher/Drop-Zuordnung je Blitz
+- [`src/data/routeTree.ts`](src/data/routeTree.ts) - Nummerierung 0-9 des Route Trees
+- [`src/engine/routeGenerator.ts`](src/engine/routeGenerator.ts) - Breite/Tiefe der Route-Breaks
+- [`src/engine/simulate.ts`](src/engine/simulate.ts) - Geschwindigkeiten, Break-Pausen, Coverage-Lag/-Reaktionszeiten
+
+Keine dieser Stellen ist bewusst falsch - es sind durchdachte, plausible Annahmen, aber eben
+Annahmen, wo es in der Praxis keine einheitliche Antwort gibt.
