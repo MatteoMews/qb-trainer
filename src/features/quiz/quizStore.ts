@@ -12,7 +12,7 @@ export const ALL_QUESTION_TYPES: readonly QuizQuestionType[] = [
   "disguise",
 ];
 
-export type TimePressure = "off" | 2 | 3 | 4;
+export type TimePressure = "off" | 6 | 10 | 15;
 
 export interface QuizSetup {
   questionTypes: QuizQuestionType[];

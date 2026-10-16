@@ -62,12 +62,25 @@ export interface Snap {
   createdAt: string;
 }
 
+/** Verknüpft einen gespeicherten Play mit einer gespeicherten Defense: welcher Verteidiger ist
+ *  gegen diese Defense der Schlüssel-Read (Reads-Tab "Meine Spielzüge"). Lokal/geräte-gebunden
+ *  wie Scouting-Snaps, da Play-/Defense-IDs zwischen Geräten nicht stabil sind - kein Teil des
+ *  portablen Play-Exports (siehe playSchema.ts `qbReadNotes` für den portablen Teil). */
+export interface ReadAnnotation {
+  id?: number;
+  playId: number;
+  defenseId: number;
+  keyDefenderId?: string;
+  updatedAt: string;
+}
+
 export class QbTrainerDb extends Dexie {
   plays!: Table<SavedPlay, number>;
   defenses!: Table<SavedDefense, number>;
   quizAttempts!: Table<QuizAttempt, number>;
   opponents!: Table<Opponent, number>;
   snaps!: Table<Snap, number>;
+  readAnnotations!: Table<ReadAnnotation, number>;
 
   constructor() {
     super("qb-trainer");
@@ -89,6 +102,14 @@ export class QbTrainerDb extends Dexie {
       quizAttempts: "++id, questionType, concept, coverage, timestamp",
       opponents: "++id, name, updatedAt",
       snaps: "++id, opponentId, down, coverage, createdAt",
+    });
+    this.version(5).stores({
+      plays: "++id, data.name, folder, updatedAt",
+      defenses: "++id, data.name, folder, updatedAt",
+      quizAttempts: "++id, questionType, concept, coverage, timestamp",
+      opponents: "++id, name, updatedAt",
+      snaps: "++id, opponentId, down, coverage, createdAt",
+      readAnnotations: "++id, [playId+defenseId], playId, defenseId",
     });
   }
 }

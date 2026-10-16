@@ -25,8 +25,6 @@ export const ZONE_DROP_DURATION_S = 1.8;
 export const ZONE_REACTION_RADIUS_YD = 8;
 export const ZONE_MAX_PULL_YD = 3;
 export const GENERIC_LB_DROP_DEPTH_YD = 4;
-export const RUSH_SPEED_YD_S = 6;
-export const RUSH_MIN_STANDOFF_YD = 1;
 export const QB_DROPBACK_DURATION_S = 1.2;
 
 export interface SimPlayer {
@@ -45,6 +43,12 @@ export interface SimFrame {
 const ELIGIBLE_RECEIVER_POSITIONS = new Set(["WR", "TE", "RB", "FB"]);
 const SECONDARY_POSITIONS = new Set(["CB", "NB", "FS", "SS", "S"]);
 const LB_POSITIONS = new Set(["OLB", "MLB", "ILB"]);
+
+/** Offense-/Defense-Line-Positionen, für die Ansichten ein "O-Line/D-Line ausblenden"-Toggle
+ *  anbieten (siehe SimulationField.tsx/Simulation3D.tsx): es gibt kein simuliertes Blocking/
+ *  Pass-Rush, D-Line-Spieler stehen daher die ganze Zeit an der Line of Scrimmage. */
+export const OL_POSITIONS = new Set(["LT", "LG", "C", "RG", "RT"]);
+export const DL_POSITIONS = new Set(["DE", "DT", "NT"]);
 
 const DROPBACK_DEPTH_YD: Record<string, number> = {
   quick: 1,
@@ -133,14 +137,6 @@ function greedyNearestAssignment(
   return assignment;
 }
 
-function rusherPosition(start: Point, qb: Point, t: number): Point {
-  const totalDist = distance(start, qb);
-  if (totalDist === 0) return start;
-  const traveled = Math.min(RUSH_SPEED_YD_S * t, Math.max(0, totalDist - RUSH_MIN_STANDOFF_YD));
-  const ratio = traveled / totalDist;
-  return { x: start.x + (qb.x - start.x) * ratio, y: start.y + (qb.y - start.y) * ratio };
-}
-
 function derivePreSnapY(finalY: number): number {
   const reduction = finalY > 8 ? 6 : 2;
   return Math.max(0.5, finalY - reduction);
@@ -167,9 +163,10 @@ function applyZoneReaction(position: Point, offenseNow: readonly SimPlayer[], t:
   return pullToward(position, nearest, ZONE_MAX_PULL_YD);
 }
 
-/** Positionen aller Defense-Spieler zum Zeitpunkt t: Defensive Line rusht Richtung QB, Secondary
- *  (und bei Man-Coverages auch Linebacker) decken den nächstgelegenen Receiver mit Lag, sonst
- *  droppen sie zu ihrem Zonen-Landmark und reagieren leicht auf nahe Receiver. */
+/** Positionen aller Defense-Spieler zum Zeitpunkt t: Defensive Line bleibt an der Line of
+ *  Scrimmage stehen (kein simuliertes Blocking/Pass-Rush, siehe engine/simulate.ts-TODO),
+ *  Secondary (und bei Man-Coverages auch Linebacker) decken den nächstgelegenen Receiver mit Lag,
+ *  sonst droppen sie zu ihrem Zonen-Landmark und reagieren leicht auf nahe Receiver. */
 export function getDefensePositionsAtTime(defense: Defense, play: Play, t: number): SimPlayer[] {
   const coverage = findCoverage(defense.coverage);
   const coverageType = coverage?.coverageType ?? "zone";
@@ -184,16 +181,13 @@ export function getDefensePositionsAtTime(defense: Defense, play: Play, t: numbe
     eligibleReceivers,
   );
 
-  const qbNow = offenseNow.find((o) => o.id === "QB");
-
   return defense.players.map((defender) => {
     const isSecondary = SECONDARY_POSITIONS.has(defender.position);
     const isLb = LB_POSITIONS.has(defender.position);
     const isDl = !isSecondary && !isLb;
 
     if (isDl) {
-      const point = rusherPosition(defender.start, qbNow ?? { x: defender.start.x, y: defender.start.y - 5 }, t);
-      return { id: defender.id, position: defender.position, x: point.x, y: point.y };
+      return { id: defender.id, position: defender.position, x: defender.start.x, y: defender.start.y };
     }
 
     if (coverageType === "man") {

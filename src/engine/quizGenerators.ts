@@ -94,20 +94,27 @@ export interface DisguiseQuestion extends QuestionBase {
 
 export type QuizQuestion = PreSnapQuestion | PostSnapReceiverQuestion | ProgressionOrderQuestion | BeaterQuestion | DisguiseQuestion;
 
-function pickDistractorNames(allItems: readonly { name: string }[], correct: { name: string; shell?: string }, count: number): string[] {
-  const sameShell = correct.shell ? allItems.filter((item) => "shell" in item && (item as { shell?: string }).shell === correct.shell && item.name !== correct.name) : [];
-  const preferred = shuffle(sameShell).slice(0, count);
-  if (preferred.length >= count) return preferred.map((p) => p.name);
-  const rest = allItems.filter((item) => item.name !== correct.name && !preferred.includes(item));
+/** Zieht `count` unterschiedliche Coverage-*Familien* als Distraktoren (nicht einzelne Coverages -
+ *  mehrere Coverages teilen sich dieselbe Familie, siehe coverages.ts `family`). Bevorzugt
+ *  Familien mit derselben Pre-Snap-Shell wie die richtige Antwort, da die als Täuschung am
+ *  plausibelsten sind. */
+function pickDistractorFamilies(correct: Coverage, count: number): string[] {
+  const sameShellFamilies = Array.from(
+    new Set(COVERAGES.filter((c) => c.shell === correct.shell && c.family !== correct.family).map((c) => c.family)),
+  );
+  const preferred = shuffle(sameShellFamilies).slice(0, count);
+  if (preferred.length >= count) return preferred;
+  const allFamilies = Array.from(new Set(COVERAGES.map((c) => c.family)));
+  const rest = allFamilies.filter((f) => f !== correct.family && !preferred.includes(f));
   const filler = shuffle(rest).slice(0, count - preferred.length);
-  return [...preferred, ...filler].map((p) => p.name);
+  return [...preferred, ...filler];
 }
 
 export function generatePreSnapQuestion(coverage: Coverage): PreSnapQuestion {
   const front = pickRandom(FRONTS);
   const hash = pickRandom(HASHES);
-  const distractors = pickDistractorNames(COVERAGES, coverage, 3);
-  const options = shuffle([coverage.name, ...distractors]);
+  const distractors = pickDistractorFamilies(coverage, 3);
+  const options = shuffle([coverage.family, ...distractors]);
 
   return {
     id: `pre-snap-${coverage.name}-${Date.now()}-${Math.random()}`,
@@ -117,9 +124,9 @@ export function generatePreSnapQuestion(coverage: Coverage): PreSnapQuestion {
     front,
     hash,
     options,
-    correctAnswer: coverage.name,
-    prompt: "Welche Coverage zeigt diese Pre-Snap-Aufstellung?",
-    explanation: `${coverage.name}: ${coverage.description}`,
+    correctAnswer: coverage.family,
+    prompt: "Welche Coverage-Familie zeigt diese Pre-Snap-Aufstellung?",
+    explanation: `${coverage.family} (konkret: ${coverage.name}): ${coverage.description}`,
   };
 }
 
@@ -201,7 +208,10 @@ export function generateDisguiseQuestion(coveragePool: readonly Coverage[] = COV
   const hash = pickRandom(HASHES);
 
   const distractorPool = coveragePool.length >= 4 ? coveragePool : COVERAGES;
-  const distractors = sampleDistinct(distractorPool, 3, actualCoverage).map((c) => c.name);
+  const distractorFamilies = Array.from(new Set(distractorPool.map((c) => c.family))).filter((f) => f !== actualCoverage.family);
+  const fallbackFamilies = Array.from(new Set(COVERAGES.map((c) => c.family))).filter((f) => f !== actualCoverage.family);
+  const families = distractorFamilies.length >= 3 ? distractorFamilies : fallbackFamilies;
+  const distractors = shuffle(families).slice(0, 3);
 
   return {
     id: `disguise-${preSnapCoverage.name}-${actualCoverage.name}-${Date.now()}-${Math.random()}`,
@@ -211,10 +221,10 @@ export function generateDisguiseQuestion(coveragePool: readonly Coverage[] = COV
     preSnapCoverage,
     actualCoverage,
     hash,
-    options: shuffle([actualCoverage.name, ...distractors]),
-    correctAnswer: actualCoverage.name,
-    prompt: `Die Defense zeigt pre-snap "${preSnapCoverage.name}" und rotiert post-snap. Was ist die tatsächliche Coverage?`,
-    explanation: `Pre-Snap-Shell: ${preSnapCoverage.name} (${preSnapCoverage.shell}). Nach der Rotation wird tatsächlich ${actualCoverage.name} gespielt: ${actualCoverage.description}`,
+    options: shuffle([actualCoverage.family, ...distractors]),
+    correctAnswer: actualCoverage.family,
+    prompt: `Die Defense zeigt pre-snap "${preSnapCoverage.family}" und rotiert post-snap. Welche Coverage-Familie wird tatsächlich gespielt?`,
+    explanation: `Pre-Snap-Shell: ${preSnapCoverage.family} (${preSnapCoverage.shell}, konkret: ${preSnapCoverage.name}). Nach der Rotation wird tatsächlich ${actualCoverage.family} (konkret: ${actualCoverage.name}) gespielt: ${actualCoverage.description}`,
   };
 }
 

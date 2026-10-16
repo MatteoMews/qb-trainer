@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { Field2D } from "../../components/Field2D";
 import { findCoverage } from "../../data/coverages";
 import { playPointToSvg, PX_PER_YARD } from "../../engine/coordinates";
-import { getFrameAt, type SimPlayer } from "../../engine/simulate";
+import { DL_POSITIONS, OL_POSITIONS, getFrameAt, type SimPlayer } from "../../engine/simulate";
 import { PlayerToken } from "../editor/PlayerToken";
 import { DefenderToken } from "../defense/DefenderToken";
 import { useSimulationStore } from "./simulationStore";
@@ -28,7 +28,7 @@ function openness(receiver: SimPlayer, defenders: SimPlayer[]): "open" | "contes
 }
 
 export function SimulationField() {
-  const { play, defense, t, showZones, showOpenIndicator, showLeverage } = useSimulationStore();
+  const { play, defense, t, showZones, showOpenIndicator, showLeverage, showLineplay } = useSimulationStore();
 
   const frame = useMemo(() => {
     if (!play || !defense) return null;
@@ -49,6 +49,8 @@ export function SimulationField() {
 
   const nonRushDefenders = frame.defense.filter((d) => SECONDARY_POSITIONS.has(d.position) || LB_POSITIONS.has(d.position));
   const eligibleReceivers = frame.offense.filter((o) => ELIGIBLE_RECEIVER_POSITIONS.has(o.position));
+  const visibleOffense = showLineplay ? frame.offense : frame.offense.filter((o) => !OL_POSITIONS.has(o.position));
+  const visibleDefense = showLineplay ? frame.defense : frame.defense.filter((d) => !DL_POSITIONS.has(d.position));
 
   return (
     <div className="simulation-field">
@@ -74,7 +76,7 @@ export function SimulationField() {
             return <line key={`leverage-${d.id}`} x1={from.x} y1={from.y} x2={to.x} y2={to.y} className="simulation-field__leverage" />;
           })}
 
-        {frame.offense.map((player) => {
+        {visibleOffense.map((player) => {
           const svg = playPointToSvg(player, ballYardLine);
           const isReceiver = ELIGIBLE_RECEIVER_POSITIONS.has(player.position);
           const status = showOpenIndicator && isReceiver ? openness(player, nonRushDefenders) : null;
@@ -93,7 +95,7 @@ export function SimulationField() {
           );
         })}
 
-        {frame.defense.map((player) => {
+        {visibleDefense.map((player) => {
           const svg = playPointToSvg(player, ballYardLine);
           return (
             <DefenderToken

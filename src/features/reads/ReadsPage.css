@@ -1,6 +1,6 @@
 .reads-page {
   display: grid;
-  grid-template-columns: minmax(280px, 420px) 1fr;
+  grid-template-columns: minmax(280px, 540px) 1fr;
   gap: 1.5rem;
   align-items: start;
 }
@@ -12,7 +12,58 @@
 }
 
 .reads-page__field {
-  max-width: 420px;
+  max-width: 540px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.reads-page__mode-tabs {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.reads-page__mode-tab {
+  font-size: 0.75rem;
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid #444;
+  background: #1a1a1a;
+  color: inherit;
+  cursor: pointer;
+}
+
+.reads-page__mode-tab--active {
+  border-color: #646cff;
+  color: #ffffff;
+}
+
+.reads-page__notes {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #444;
+  background: #1a1a1a;
+  color: inherit;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.reads-page__save {
+  align-self: flex-start;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  border: 1px solid #444;
+  background: #1a1a1a;
+  color: inherit;
+  cursor: pointer;
+}
+
+.reads-page__saved-hint {
+  color: #4caf50;
+  font-size: 0.85rem;
+  margin-left: 0.5rem;
 }
 
 .reads-page__panel {

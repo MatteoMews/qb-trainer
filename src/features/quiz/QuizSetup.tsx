@@ -12,7 +12,7 @@ const QUESTION_TYPE_LABELS: Record<QuizQuestionType, string> = {
   disguise: "Disguise-Erkennung",
 };
 
-const TIME_PRESSURE_OPTIONS: TimePressure[] = ["off", 2, 3, 4];
+const TIME_PRESSURE_OPTIONS: TimePressure[] = ["off", 6, 10, 15];
 
 export function QuizSetup() {
   const { setup, updateSetup, startQuiz } = useQuizStore();

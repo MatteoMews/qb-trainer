@@ -17,6 +17,13 @@ export async function updatePlay(id: number, play: Play): Promise<void> {
   await db.plays.update(id, { data: play, updatedAt: new Date().toISOString() });
 }
 
+/** Speichert die editierbare QB-Read-Erklärung zu einem Spielzug (Reads-Tab "Meine Spielzüge"). */
+export async function updateReadNotes(id: number, qbReadNotes: string): Promise<void> {
+  const existing = await db.plays.get(id);
+  if (!existing) throw new Error(`Play ${id} nicht gefunden`);
+  await updatePlay(id, { ...existing.data, qbReadNotes });
+}
+
 export async function renamePlay(id: number, name: string): Promise<void> {
   const existing = await db.plays.get(id);
   if (!existing) throw new Error(`Play ${id} nicht gefunden`);

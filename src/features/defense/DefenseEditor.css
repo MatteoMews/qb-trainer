@@ -1,6 +1,6 @@
 .defense-editor {
   display: grid;
-  grid-template-columns: minmax(280px, 420px) 1fr;
+  grid-template-columns: minmax(280px, 540px) 1fr;
   gap: 1.5rem;
   align-items: start;
 }
@@ -12,7 +12,7 @@
 }
 
 .defense-editor__field {
-  max-width: 420px;
+  max-width: 540px;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;

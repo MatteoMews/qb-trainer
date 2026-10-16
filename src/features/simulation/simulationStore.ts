@@ -15,6 +15,7 @@ interface SimulationState {
   showZones: boolean;
   showOpenIndicator: boolean;
   showLeverage: boolean;
+  showLineplay: boolean;
   viewMode: ViewMode;
   cameraMode: CameraMode;
 
@@ -28,6 +29,7 @@ interface SimulationState {
   toggleShowZones(): void;
   toggleShowOpenIndicator(): void;
   toggleShowLeverage(): void;
+  toggleShowLineplay(): void;
   setViewMode(mode: ViewMode): void;
   setCameraMode(mode: CameraMode): void;
 }
@@ -41,6 +43,7 @@ export const useSimulationStore = create<SimulationState>((set) => ({
   showZones: true,
   showOpenIndicator: true,
   showLeverage: false,
+  showLineplay: true,
   viewMode: "2d",
   cameraMode: "qb",
 
@@ -69,6 +72,7 @@ export const useSimulationStore = create<SimulationState>((set) => ({
   toggleShowZones: () => set((state) => ({ showZones: !state.showZones })),
   toggleShowOpenIndicator: () => set((state) => ({ showOpenIndicator: !state.showOpenIndicator })),
   toggleShowLeverage: () => set((state) => ({ showLeverage: !state.showLeverage })),
+  toggleShowLineplay: () => set((state) => ({ showLineplay: !state.showLineplay })),
 
   setViewMode: (viewMode) => set({ viewMode }),
   setCameraMode: (cameraMode) => set({ cameraMode }),

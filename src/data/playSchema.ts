@@ -43,6 +43,10 @@ export const PlaySchema = z.object({
     players: z.array(PlayPlayerSchema),
   }),
   notes: z.string().optional(),
+  /** Frei editierbare QB-Read-Erklärung (Progression, worauf achten) zu diesem Spielzug, siehe
+   *  Reads-Tab "Meine Spielzüge". Getrennt von `notes`, da `notes` für allgemeine Coaching-Punkte
+   *  gedacht ist und dieses Feld gezielt die Read-Erklärung hält. */
+  qbReadNotes: z.string().optional(),
 });
 export type Play = z.infer<typeof PlaySchema>;
 

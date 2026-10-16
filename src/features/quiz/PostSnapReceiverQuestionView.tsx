@@ -6,7 +6,7 @@ import { Player3D } from "../simulation/Player3D";
 import { buildDefense } from "../../engine/buildDefense";
 import { buildPlay } from "../../engine/buildPlay";
 import { playPointToWorld, type Vec3 } from "../../engine/coordinates3D";
-import { getFrameAt, SIM_DURATION_S } from "../../engine/simulate";
+import { DL_POSITIONS, OL_POSITIONS, getFrameAt, SIM_DURATION_S } from "../../engine/simulate";
 import type { PostSnapReceiverQuestion } from "../../engine/quizGenerators";
 import "./PostSnapReceiverQuestionView.css";
 
@@ -64,6 +64,10 @@ export function PostSnapReceiverQuestionView({ question, disabled, selectedId, o
   const ballYardLine = play.ball.yardLine;
   const qb = frame.offense.find((p) => p.id === "QB");
   const qbWorld = qb ? playPointToWorld(qb, ballYardLine) : { x: 0, y: 0, z: 0 };
+  // O-Line/D-Line immer ausgeblendet: hier geht es nur ums Anklicken des richtigen Receivers,
+  // und die unbewegte Line (kein simuliertes Blocking) versperrt sonst unnötig die Sicht.
+  const visibleOffense = frame.offense.filter((p) => !OL_POSITIONS.has(p.position));
+  const visibleDefense = frame.defense.filter((p) => !DL_POSITIONS.has(p.position));
 
   function highlightFor(id: string): "correct" | "wrong" | null {
     if (!disabled) return null;
@@ -78,7 +82,7 @@ export function PostSnapReceiverQuestionView({ question, disabled, selectedId, o
         <ambientLight intensity={0.7} />
         <directionalLight position={[20, 30, 10]} intensity={1.1} castShadow />
         <Field3D />
-        {frame.offense.map((player) => (
+        {visibleOffense.map((player) => (
           <Player3D
             key={player.id}
             id={player.id}
@@ -88,7 +92,7 @@ export function PostSnapReceiverQuestionView({ question, disabled, selectedId, o
             highlight={highlightFor(player.id)}
           />
         ))}
-        {frame.defense.map((player) => (
+        {visibleDefense.map((player) => (
           <Player3D key={player.id} id={player.id} team="defense" position={playPointToWorld(player, ballYardLine)} />
         ))}
         <PerspectiveCamera makeDefault fov={75} near={0.1} far={300} />

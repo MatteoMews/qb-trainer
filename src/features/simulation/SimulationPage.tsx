@@ -39,6 +39,7 @@ export function SimulationPage() {
     showZones,
     showOpenIndicator,
     showLeverage,
+    showLineplay,
     viewMode,
     cameraMode,
     selectPlay,
@@ -50,6 +51,7 @@ export function SimulationPage() {
     toggleShowZones,
     toggleShowOpenIndicator,
     toggleShowLeverage,
+    toggleShowLineplay,
     setViewMode,
     setCameraMode,
   } = useSimulationStore(
@@ -61,6 +63,7 @@ export function SimulationPage() {
       showZones: s.showZones,
       showOpenIndicator: s.showOpenIndicator,
       showLeverage: s.showLeverage,
+      showLineplay: s.showLineplay,
       viewMode: s.viewMode,
       cameraMode: s.cameraMode,
       selectPlay: s.selectPlay,
@@ -72,6 +75,7 @@ export function SimulationPage() {
       toggleShowZones: s.toggleShowZones,
       toggleShowOpenIndicator: s.toggleShowOpenIndicator,
       toggleShowLeverage: s.toggleShowLeverage,
+      toggleShowLineplay: s.toggleShowLineplay,
       setViewMode: s.setViewMode,
       setCameraMode: s.setCameraMode,
     })),
@@ -254,6 +258,14 @@ export function SimulationPage() {
             <input type="checkbox" checked={showLeverage} onChange={toggleShowLeverage} />
             Leverage-Linien (Man-Coverage)
           </label>
+          <label className="simulation-page__checkbox">
+            <input type="checkbox" checked={showLineplay} onChange={toggleShowLineplay} />
+            O-Line/D-Line anzeigen
+          </label>
+          <p className="simulation-page__hint">
+            Kein Blocking/Pass-Rush simuliert: D-Line steht die ganze Zeit an der Line of Scrimmage. Ausblenden für eine
+            reine Read-Ansicht.
+          </p>
         </section>
       </div>
     </div>

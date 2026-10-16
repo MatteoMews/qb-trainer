@@ -32,6 +32,11 @@ export interface CoverageZone {
 
 export interface Coverage {
   name: string;
+  /** Breitere Familie für vereinfachte Quiz-Fragen (Projektauftrag-Feedback: die exakte
+   *  Technik-Variante, z.B. Sky vs. Buzz vs. Cloud, ist für die Pre-Snap-/Disguise-Erkennung im
+   *  Quiz nicht die Kernkompetenz - das volle Detail bleibt in `name`/`description` für
+   *  Defense-Editor und Simulation erhalten. */
+  family: string;
   shell: CoverageShell;
   coverageType: CoverageType;
   description: string;
@@ -46,6 +51,7 @@ export interface Coverage {
 export const COVERAGES: readonly Coverage[] = [
   {
     name: "Cover 0",
+    family: "Cover 0",
     shell: "no-high",
     coverageType: "man",
     description: "Reine Mann-Coverage ohne Deep-Safety-Hilfe. Maximaler Druck, keine Sicherheit gegen den großen Play.",
@@ -63,6 +69,7 @@ export const COVERAGES: readonly Coverage[] = [
   },
   {
     name: "Cover 1 Free",
+    family: "Cover 1",
     shell: "single-high",
     coverageType: "man",
     description: "Mann-Coverage mit einem freien Deep-Safety in der Mitte, sonst Man-to-Man ohne weitere Hilfe.",
@@ -80,6 +87,7 @@ export const COVERAGES: readonly Coverage[] = [
   },
   {
     name: "Cover 1 Robber",
+    family: "Cover 1",
     shell: "single-high",
     coverageType: "man",
     description:
@@ -101,6 +109,7 @@ export const COVERAGES: readonly Coverage[] = [
   },
   {
     name: "Cover 1 Rat/Hole",
+    family: "Cover 1",
     shell: "single-high",
     coverageType: "man",
     description:
@@ -122,6 +131,7 @@ export const COVERAGES: readonly Coverage[] = [
   },
   {
     name: "Cover 2 Zone",
+    family: "Cover 2",
     shell: "two-high",
     coverageType: "zone",
     description: "Zwei Deep-Safeties teilen sich die tiefe Hälfte, Corners spielen Flat-Zone, Linebacker die Hook/Curl-Zonen.",
@@ -144,6 +154,7 @@ export const COVERAGES: readonly Coverage[] = [
   },
   {
     name: "Tampa 2",
+    family: "Tampa 2",
     shell: "two-high",
     coverageType: "zone",
     description: "Cover-2-Variante, bei der der Mike Linebacker die Deep-Middle-Lücke zwischen den Safeties zusätzlich absichert.",
@@ -165,6 +176,7 @@ export const COVERAGES: readonly Coverage[] = [
   },
   {
     name: "2-Man",
+    family: "2-Man",
     shell: "two-high",
     coverageType: "man",
     description: "Zwei Deep-Safeties wie Cover 2, aber alle Underneath-Defender spielen Mann-Coverage statt Zone.",
@@ -185,6 +197,7 @@ export const COVERAGES: readonly Coverage[] = [
   },
   {
     name: "Cover 3 Sky",
+    family: "Cover 3",
     shell: "single-high",
     coverageType: "zone",
     description: "Deep-Third-Zone mit Safety-Rotation: die Strong Safety ('Sky') rotiert zum Flat/Force-Defender.",
@@ -207,6 +220,7 @@ export const COVERAGES: readonly Coverage[] = [
   },
   {
     name: "Cover 3 Buzz",
+    family: "Cover 3",
     shell: "single-high",
     coverageType: "zone",
     description: "Cover-3-Variante, bei der die schwache Safety ('Buzz') statt der starken zum Curl/Flat 'buzzt', während die starke Safety tief bleibt.",
@@ -229,6 +243,7 @@ export const COVERAGES: readonly Coverage[] = [
   },
   {
     name: "Cover 3 Cloud",
+    family: "Cover 3",
     shell: "single-high",
     coverageType: "zone",
     description: "Cover-3-Variante mit Corner-Support: der Corner zur Call-Seite rollt als Flat/Force-Defender hoch, die Safety bleibt tief.",
@@ -251,6 +266,7 @@ export const COVERAGES: readonly Coverage[] = [
   },
   {
     name: "Cover 3 Match (Rip/Liz)",
+    family: "Cover 3",
     shell: "single-high",
     coverageType: "pattern-match",
     description:
@@ -274,6 +290,7 @@ export const COVERAGES: readonly Coverage[] = [
   },
   {
     name: "Cover 4 Match-Quarters",
+    family: "Cover 4",
     shell: "quarters",
     coverageType: "pattern-match",
     description: "Vier Deep-Defender teilen sich je ein Feldviertel und matchen die Releases der Receiver in ihrem Viertel.",
@@ -296,6 +313,7 @@ export const COVERAGES: readonly Coverage[] = [
   },
   {
     name: "Palms (2-Read)",
+    family: "Palms",
     shell: "quarters",
     coverageType: "pattern-match",
     description:
@@ -319,6 +337,7 @@ export const COVERAGES: readonly Coverage[] = [
   },
   {
     name: "Cover 7 (Bracket-Match)",
+    family: "Cover 7",
     shell: "quarters",
     coverageType: "pattern-match",
     description:
@@ -342,6 +361,7 @@ export const COVERAGES: readonly Coverage[] = [
   },
   {
     name: "Cover 6 (Quarter-Quarter-Half)",
+    family: "Cover 6",
     shell: "quarters",
     coverageType: "pattern-match",
     description: "Split-Field-Coverage: zur kurzen/Boundary-Seite Quarters, zur breiten/Field-Seite Cover-2-Half.",
@@ -364,6 +384,7 @@ export const COVERAGES: readonly Coverage[] = [
   },
   {
     name: "Bracket/Doppel-Coverage",
+    family: "Bracket",
     shell: "bracket",
     coverageType: "man",
     description:

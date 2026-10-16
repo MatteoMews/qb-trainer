@@ -9,7 +9,6 @@ import {
   GENERIC_LB_DROP_DEPTH_YD,
   MAN_COVERAGE_LAG_S,
   QB_DROPBACK_DURATION_S,
-  RUSH_MIN_STANDOFF_YD,
   SIM_DURATION_S,
   ZONE_DROP_DURATION_S,
   getDefensePositionsAtTime,
@@ -78,16 +77,12 @@ describe("getOffensePositionsAtTime", () => {
 });
 
 describe("getDefensePositionsAtTime", () => {
-  it("moves defensive linemen toward the QB but never closer than the minimum standoff", () => {
+  it("keeps defensive linemen static at the line of scrimmage (kein simuliertes Blocking/Pass-Rush)", () => {
     const atSnap = getDefensePositionsAtTime(manDefense, play, 0).find((p) => p.position === "DE")!;
     const later = getDefensePositionsAtTime(manDefense, play, 2).find((p) => p.id === atSnap.id)!;
-    const qb = getOffensePositionsAtTime(play, 2).find((p) => p.id === "QB")!;
 
-    const distAtSnap = Math.hypot(atSnap.x - qb.x, atSnap.y - qb.y);
-    const distLater = Math.hypot(later.x - qb.x, later.y - qb.y);
-
-    expect(distLater).toBeLessThan(distAtSnap);
-    expect(distLater).toBeGreaterThanOrEqual(RUSH_MIN_STANDOFF_YD - 0.01);
+    expect(later.x).toBeCloseTo(atSnap.x);
+    expect(later.y).toBeCloseTo(atSnap.y);
   });
 
   it("tracks the nearest receiver in man coverage with a time lag", () => {

@@ -16,9 +16,9 @@ describe("generatePreSnapQuestion", () => {
     const coverage = findCoverage("Cover 3 Sky")!;
     const question = generatePreSnapQuestion(coverage);
 
-    expect(question.options).toContain(coverage.name);
+    expect(question.options).toContain(coverage.family);
     expect(new Set(question.options).size).toBe(question.options.length);
-    expect(question.correctAnswer).toBe(coverage.name);
+    expect(question.correctAnswer).toBe(coverage.family);
   });
 });
 
@@ -64,8 +64,8 @@ describe("generateDisguiseQuestion", () => {
     const question = generateDisguiseQuestion()!;
 
     expect(question.preSnapCoverage.shell).not.toBe(question.actualCoverage.shell);
-    expect(question.correctAnswer).toBe(question.actualCoverage.name);
-    expect(question.options).toContain(question.actualCoverage.name);
+    expect(question.correctAnswer).toBe(question.actualCoverage.family);
+    expect(question.options).toContain(question.actualCoverage.family);
   });
 
   it("restricts the actual (correct) coverage to a given pool, e.g. a scouted opponent's tendencies", () => {

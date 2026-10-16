@@ -1,7 +1,7 @@
 import { Canvas } from "@react-three/fiber";
 import { useMemo } from "react";
 import { playPointToWorld } from "../../engine/coordinates3D";
-import { getFrameAt } from "../../engine/simulate";
+import { DL_POSITIONS, OL_POSITIONS, getFrameAt } from "../../engine/simulate";
 import { CameraRig } from "./CameraRig";
 import { Field3D } from "./Field3D";
 import { Player3D } from "./Player3D";
@@ -9,7 +9,7 @@ import { useSimulationStore } from "./simulationStore";
 import "./Simulation3D.css";
 
 export function Simulation3D() {
-  const { play, defense, t, cameraMode } = useSimulationStore();
+  const { play, defense, t, cameraMode, showLineplay } = useSimulationStore();
 
   const frame = useMemo(() => {
     if (!play || !defense) return null;
@@ -27,6 +27,8 @@ export function Simulation3D() {
   const ballYardLine = play.data.ball.yardLine;
   const qb = frame.offense.find((p) => p.id === "QB");
   const qbWorld = qb ? playPointToWorld(qb, ballYardLine) : { x: 0, y: 0, z: 0 };
+  const visibleOffense = showLineplay ? frame.offense : frame.offense.filter((p) => !OL_POSITIONS.has(p.position));
+  const visibleDefense = showLineplay ? frame.defense : frame.defense.filter((p) => !DL_POSITIONS.has(p.position));
 
   return (
     <div className="simulation-3d">
@@ -34,10 +36,10 @@ export function Simulation3D() {
         <ambientLight intensity={0.7} />
         <directionalLight position={[20, 30, 10]} intensity={1.1} castShadow />
         <Field3D />
-        {frame.offense.map((player) => (
+        {visibleOffense.map((player) => (
           <Player3D key={player.id} id={player.id} team="offense" position={playPointToWorld(player, ballYardLine)} />
         ))}
-        {frame.defense.map((player) => (
+        {visibleDefense.map((player) => (
           <Player3D key={player.id} id={player.id} team="defense" position={playPointToWorld(player, ballYardLine)} />
         ))}
         <CameraRig mode={cameraMode} qbPosition={qbWorld} />
