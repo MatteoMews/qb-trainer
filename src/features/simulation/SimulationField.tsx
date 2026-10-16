@@ -1,7 +1,7 @@
-import { useMemo } from "react";
+import { useId, useMemo } from "react";
 import { Field2D } from "../../components/Field2D";
 import { findCoverage } from "../../data/coverages";
-import { playPointToSvg, PX_PER_YARD } from "../../engine/coordinates";
+import { FIELD_SVG_WIDTH, playPointToSvg, PX_PER_YARD, yardLineToSvgY } from "../../engine/coordinates";
 import { DL_POSITIONS, OL_POSITIONS, getFrameAt, type SimPlayer } from "../../engine/simulate";
 import { PlayerToken } from "../editor/PlayerToken";
 import { DefenderToken } from "../defense/DefenderToken";
@@ -29,6 +29,7 @@ function openness(receiver: SimPlayer, defenders: SimPlayer[]): "open" | "contes
 
 export function SimulationField() {
   const { play, defense, t, showZones, showOpenIndicator, showLeverage, showLineplay } = useSimulationStore();
+  const zoneClipId = useId();
 
   const frame = useMemo(() => {
     if (!play || !defense) return null;
@@ -56,12 +57,19 @@ export function SimulationField() {
     <div className="simulation-field">
       <Field2D>
         {showZones && coverage && coverage.coverageType !== "man" && (
-          <g className="simulation-field__zones">
-            {nonRushDefenders.map((d) => {
-              const svg = playPointToSvg(d, ballYardLine);
-              return <circle key={`zone-${d.id}`} cx={svg.x} cy={svg.y} r={ZONE_RADIUS_YD * PX_PER_YARD} className="simulation-field__zone" />;
-            })}
-          </g>
+          <>
+            {/* Zonen-Kreise werden auf die Defense-Hälfte geclippt, damit sie nicht wie Spieler
+                im eigenen Backfield wirken, nur weil ihr Radius über die Line of Scrimmage reicht. */}
+            <clipPath id={zoneClipId}>
+              <rect x={0} y={0} width={FIELD_SVG_WIDTH} height={yardLineToSvgY(ballYardLine)} />
+            </clipPath>
+            <g className="simulation-field__zones" clipPath={`url(#${zoneClipId})`}>
+              {nonRushDefenders.map((d) => {
+                const svg = playPointToSvg(d, ballYardLine);
+                return <circle key={`zone-${d.id}`} cx={svg.x} cy={svg.y} r={ZONE_RADIUS_YD * PX_PER_YARD} className="simulation-field__zone" />;
+              })}
+            </g>
+          </>
         )}
 
         {showLeverage && coverage?.coverageType === "man" &&
